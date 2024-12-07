@@ -1,0 +1,146 @@
+<div id="carouselExampleDark" class="carousel carousel-dark slide mb-4 carousel-fade">
+  <div class="carousel-indicators">
+    <button 
+      for="index in revenueIndicators"
+      :key="'revenue-indicator-' + index"
+      type="button"
+      data-bs-target="#carouselExampleDark"
+      :data-bs-slide-to="index"
+      class="carousel-indicator"
+      :class="{ active: isSlideActive(index, 'revenue') }"
+      @click="setActiveRevenueIndex(index)"
+      :aria-current="index === 0"
+      :aria-label="'Slide ' + (index + 1)">
+    </button>
+  </div>
+  <div class="carousel-inner">
+    <div 
+      for="(movie, index) in topRevenue"
+      :key="'revenue-slide-' + index"
+      class="carousel-item"
+      :class="{ active: isSlideActive(index, 'revenue') }"
+      data-bs-interval="10000">
+        <div style="cursor: pointer;" @click="navigateToMovie(movie.id)">
+          <div class="d-flex justify-content-center" style="width: 100%">
+            <img :src="movie.image" class="d-block carousel-img" :alt="movie.title">
+          </div>
+          <div class="carousel-caption d-none d-md-block">
+            <h3>{{ movie.fullTitle }}</h3>
+            <p>{{ getGenre(movie) }}</p>
+          </div>
+        </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h4 class="m-0">Most Popular</h4>
+  <div class="d-flex gap-2">
+    <button 
+      for="index in popularIndicators"
+      :key="'popular-indicator-' + index"
+      type="button"
+      data-bs-target="#carouselExampleRide"
+      :data-bs-slide-to="index"
+      class="carousel-indicator"
+      :class="{ active: isSlideActive(index, 'popular') }"
+      @click="setActivePopularIndex(index)"
+      :aria-current="index === 0"
+      :aria-label="'Slide ' + (index + 1)">
+    </button>
+  </div>
+</div>
+
+<div id="carouselExampleRide" class="carousel slide mb-5" data-bs-ride="true">
+  <div class="carousel-inner">
+    <div 
+      for="(slide, slideIndex) in popularSlides"
+      :key="'popular-slide-' + slideIndex"
+      class="carousel-item"
+      :class="{ active: isSlideActive(slideIndex, 'popular') }">
+      <div class="d-flex justify-content-center">
+        <div for="(movie, movieIndex) in slide" class="p-1" style="cursor:pointer;" @click="navigateToMovie(movie.id)" @mouseover="setHoveredMovieTitle(movie.fullTitle)" @mouseleave="setHoveredMovieTitle(null)">
+          <div class="card custom-hover-img" style="width: 365px">
+            <img 
+              :src="movie.image"
+              class="card-img-top "
+              :alt="movie.title"
+              style="height: 200px;"
+            />
+            <div v-if="hoveredMovieTitle === movie.fullTitle" class="card-body">
+              <h5 class="card-title mb-0">{{ hoveredMovieTitle }}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleRide" data-bs-slide="prev" style="width: 32px">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleRide" data-bs-slide="next" style="width: 32px">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h4 class="m-0">Top Rating</h4>
+  <div class="d-flex gap-2">
+    <button 
+      for="index in ratingIndicators"
+      :key="'rating-indicator-' + index"
+      type="button"
+      data-bs-target="#carouselTopRating"
+      :data-bs-slide-to="index"
+      class="carousel-indicator"
+      :class="{ active: isSlideActive(index, 'rating') }"
+      @click="setActiveRatingIndex(index)"
+      :aria-current="index === 0"
+      :aria-label="'Slide ' + (index + 1)">
+    </button>
+  </div>
+</div>
+
+<div id="carouselTopRating" class="carousel slide" data-bs-ride="true">
+  <div class="carousel-inner">
+    <div 
+      for="(slide, slideIndex) in ratingSlides"
+      :key="'rating-slide-' + slideIndex"
+      class="carousel-item"
+      :class="{ active: isSlideActive(slideIndex, 'rating') }">
+      <div class="d-flex justify-content-center">
+        <div for="(movie, movieIndex) in slide" class="p-1" style="cursor: pointer;" @click="navigateToMovie(movie.id)" @mouseover="setHoveredMovieTitle(movie.fullTitle)" @mouseleave="setHoveredMovieTitle(null)">
+          <div class="card custom-hover-img p-0" style="width: 365px">
+            <img 
+              :src="movie.image"
+              class="card-img-top"
+              :alt="movie.title"
+              style="height: 200px;"
+            />
+            <div v-if="hoveredMovieTitle === movie.fullTitle" class="card-body">
+              <h5 class="card-title mb-0">{{ hoveredMovieTitle }}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselTopRating" data-bs-slide="prev" style="width: 32px">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselTopRating" data-bs-slide="next" style="width: 32px">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
