@@ -43,6 +43,12 @@ export const ErrorCode = {
     desc: "The input is empty",
   },
 
+  MOVIE_NOT_FOUND: {
+    message: "Movie not found",
+    statusCode: HttpStatus.NOT_FOUND,
+    desc: "The movie you're looking for doesn't exist",
+  },
+
   PAGE_NOT_FOUND: {
     message: "Page not found",
     statusCode: HttpStatus.NOT_FOUND,

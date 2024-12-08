@@ -103,7 +103,7 @@ module.exports = {
         JOIN "${schema}"."genres" g ON mg."genrekey" = g."key"
         WHERE mg."movieid" = '${movieId}'
       `;
-      
+
       const genres = await db.any(sql);
 
       return genres;
@@ -148,6 +148,21 @@ module.exports = {
       const movies = await db.any(sql);
 
       return movies;
+    } catch (e) {
+      throw new ApplicationError(ec.SERVER_ERROR);
+    }
+  },
+
+  getRatings: async (movieId) => {
+    try {
+      const sql = `
+        SELECT *
+        FROM "${schema}"."movieratings"
+        WHERE "movieid" = '${movieId}'
+      `;
+      const ratings = await db.any(sql);
+
+      return ratings;
     } catch (e) {
       throw new ApplicationError(ec.SERVER_ERROR);
     }

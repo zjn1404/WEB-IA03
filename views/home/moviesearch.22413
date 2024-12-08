@@ -4,7 +4,7 @@
     <div 
       class="card h-100" 
       style="cursor: pointer;" 
-      onclick="navigateToMovie(22413{movie.id})"
+      onclick="window.location.href='/movie?id=22413{movie.id}'"
     >
       <img 
         src="22413{movie.imageurl}" 

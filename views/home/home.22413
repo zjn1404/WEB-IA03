@@ -109,7 +109,10 @@
       carouselItem.setAttribute('data-bs-interval', '10000');
       
       carouselItem.innerHTML = `
-        <div style="cursor: pointer;">
+        <div 
+          style="cursor: pointer;" 
+          onclick="window.location.href='/movie?id=${movie.id}'"
+        >
           <div class="d-flex justify-content-center" style="width: 100%">
             <img src="${movie.imageurl}" class="d-block carousel-img" alt="${movie.fulltitle}">
           </div>
@@ -221,6 +224,7 @@
                     style="height: 200px;"
                     onmouseover="this.nextElementSibling.style.display='block'"
                     onmouseout="this.nextElementSibling.style.display='none'"
+                    onclick="window.location.href='/movie?id=${movie.id}'"
                   />
                   <div class="card-body" style="display: none;">
                     <h5 class="card-title mb-0">${movie.fulltitle}</h5>
@@ -330,6 +334,7 @@
                     style="height: 200px;"
                     onmouseover="this.nextElementSibling.style.display='block'"
                     onmouseout="this.nextElementSibling.style.display='none'"
+                    onclick="window.location.href='/movie?id=${movie.id}'"
                   />
                   <div class="card-body" style="display: none;">
                     <h5 class="card-title mb-0">${movie.fulltitle}</h5>

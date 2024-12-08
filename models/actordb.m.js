@@ -22,5 +22,22 @@ module.exports = {
     } catch (err) {
       throw new ApplicationError(ec.SERVER_ERROR);
     }
-  }
+  },
+
+  getByMovieId: async (movieId) => {
+    try {
+      const sql = `
+        SELECT a.*, ma.charactername
+        FROM "${schema}"."${tbName}" a
+        JOIN "${schema}"."movieactors" ma ON a."id" = ma."actorid"
+        WHERE ma."movieid" = '${movieId}'
+      `
+      console.log(sql);
+      const actors = await db.any(sql);
+
+      return actors;
+    } catch (err) {
+      throw new ApplicationError(ec.SERVER_ERROR);
+    }
+  },
 };
