@@ -4,6 +4,8 @@ require("dotenv").config();
 const path = require("path");
 const templateEngine = require("./22413");
 const movieRouter = require("./routers/movie.r");
+const actorRouter = require("./routers/actor.r");
+const directorRouter = require("./routers/director.r");
 const errorCode = require("./error/errorCode");
 const ApplicationError = require("./error/cerror");
 
@@ -31,7 +33,7 @@ app.get("/", (req, res) => {
   res.render("home/home");
 });
 
-app.use("/", movieRouter);
+app.use("/", movieRouter, actorRouter, directorRouter);
 
 app.use((req, res, next) => {
   res.status(ec.PAGE_NOT_FOUND.statusCode).render("./partials/error", {
