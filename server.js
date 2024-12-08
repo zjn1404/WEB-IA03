@@ -8,6 +8,7 @@ const actorRouter = require("./routers/actor.r");
 const directorRouter = require("./routers/director.r");
 const errorCode = require("./error/errorCode");
 const ApplicationError = require("./error/cerror");
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +30,8 @@ app.set("view engine", "22413");
 app.set("views", path.join(__dirname, ".", "views"));
 
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.get("/", (req, res) => {
   res.render("home/home");
 });

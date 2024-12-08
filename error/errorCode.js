@@ -49,6 +49,24 @@ export const ErrorCode = {
     desc: "The movie you're looking for doesn't exist",
   },
 
+  REVIEW_TITLE_REQUIRED: {
+    message: "Review title is required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Review title is required",
+  },
+
+  REVIEW_CONTENT_REQUIRED: {
+    message: "Review content is required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Review content is required",
+  },
+
+  USERNAME_REQUIRED: {
+    message: "Username is required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Username is required",
+  },
+
   PAGE_NOT_FOUND: {
     message: "Page not found",
     statusCode: HttpStatus.NOT_FOUND,

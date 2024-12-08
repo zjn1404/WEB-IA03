@@ -7,6 +7,42 @@ const errorCode = require("../error/errorCode.js");
 
 const ec = errorCode.ErrorCode;
 
+const createReview = async (req, res, next) => {
+  try {
+    const username = req.body.username;
+    if (!username) {
+      return next(new ApplicationError(ec.USERNAME_REQUIRED));
+    }
+
+    const reviewtitle = req.body.reviewtitle;
+    if (!reviewtitle) {
+      return next(new ApplicationError(ec.REVIEW_TITLE_REQUIRED));
+    }
+
+    const reviewcontent = req.body.reviewcontent;
+    if (!reviewcontent) {
+      return next(new ApplicationError(ec.REVIEW_CONTENT_REQUIRED));
+    }
+
+    const review = {
+      movieid: req.query.movieId,
+      username: username,
+      reviewtitle: reviewtitle,
+      reviewcontent: reviewcontent,
+      reviewdate: new Date().toISOString(),
+    };
+
+    await reviewModel.create(review);
+
+    res.render("partials/success", {
+      message: "Review successfully",
+    });
+  } catch (e) {
+    console.error(e);
+    return next(new ApplicationError(ec.SERVER_ERROR));
+  }
+};
+
 const getTopBoxOffice = async (req, res, next) => {
   const limit = 15;
   try {
@@ -110,18 +146,24 @@ const processRatings = async (ratings) => {
     return "";
   }
 
-  return `imdb: ${ratings.imdb || "no data"}, metacritic: ${ratings.metacritic || "no data"}, rottenTomatoes: ${ratings.rottentomatoes || "no data"}, filmaffinity: ${ratings.filmaffinity || "no data"}`;
-}
+  return `imdb: ${ratings.imdb || "no data"}, metacritic: ${
+    ratings.metacritic || "no data"
+  }, rottenTomatoes: ${ratings.rottentomatoes || "no data"}, filmaffinity: ${
+    ratings.filmaffinity || "no data"
+  }`;
+};
 
 const processDirectors = async (directors) => {
   if (!directors || directors.length === 0) {
     return "";
   }
 
-  return directors.map((director) => {
-    return director.name;
-  }).join(", ");
-}
+  return directors
+    .map((director) => {
+      return director.name;
+    })
+    .join(", ");
+};
 
 const getById = async (req, res, next) => {
   try {
@@ -141,9 +183,9 @@ const getById = async (req, res, next) => {
 
     const actors = await actorModel.getByMovieId(movie.id);
     const reviews = await reviewModel.getByMovieId(movie.id);
-    reviews.forEach( (review) => {
-      review.reviewdate = review.reviewdate.toISOString().split('T')[0];
-    })
+    reviews.forEach((review) => {
+      review.reviewdate = review.reviewdate.toISOString().split("T")[0];
+    });
 
     return res.render("home/moviedetail", {
       movie: movie,
@@ -157,6 +199,7 @@ const getById = async (req, res, next) => {
 };
 
 module.exports = {
+  createReview,
   getTopBoxOffice,
   getTopRating,
   getTopFavorite,

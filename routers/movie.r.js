@@ -6,5 +6,6 @@ router.get("/top-ratings", movieController.getTopRating);
 router.get("/top-favorites", movieController.getTopFavorite);
 router.get("/search-movie", movieController.getByNameOrGenres);
 router.get("/movie", movieController.getById);
+router.post("/review", movieController.createReview);
 
 module.exports = router;

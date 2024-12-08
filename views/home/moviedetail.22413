@@ -53,6 +53,26 @@
 </div>
 
 <div class="mt-4">
+  
+  <div class="mt-4">
+    <h5>Add a Review</h5>
+    <form id="reviewForm" action="/review?movieId=22413{movie.id}" method="post">
+      <div class="mb-3">
+        <label for="reviewUsername" class="form-label">Username</label>
+        <input type="text" class="form-control" id="reviewUsername" name="username" >
+      </div>
+      <div class="mb-3">
+        <label for="reviewTitle" class="form-label">Review Title</label>
+        <input type="text" class="form-control" id="reviewTitle" name="reviewtitle" >
+      </div>
+      <div class="mb-3">
+        <label for="reviewContent" class="form-label">Review Content</label>
+        <textarea class="form-control" id="reviewContent" name="reviewcontent" rows="3" ></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+  </div>
+  
   <h5>Reviews</h5>
   <ul class="list-group" id="reviewsList">
   </ul>
