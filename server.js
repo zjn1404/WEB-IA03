@@ -4,9 +4,13 @@ require("dotenv").config();
 const path = require("path");
 const templateEngine = require("./22413");
 const movieRouter = require("./routers/movie.r");
+const errorCode = require("./error/errorCode");
+const ApplicationError = require("./error/cerror");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const ec = errorCode.ErrorCode;
 
 app.engine(
   "22413",

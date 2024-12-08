@@ -6,16 +6,38 @@
     <a class="navbar-brand" href="/">
       <h4 class="individual-mark">22413</h4>
     </a>
-    <form class="d-flex" role="search">
+    <form class="d-flex" id="searchForm" method="get">
       <input 
         class="form-control me-2" 
         type="search" 
-        v-model="searchTerm"
         placeholder="Search" 
         aria-label="Search"
-        @keyup.enter="handleKeyup"
+        name="keyword"
+        required
       >
+      <select class="form-select me-2" name="searchType" aria-label="Search Type" onchange="updateFormAction()">
+        <option value="movie" selected>Movie</option>
+        <option value="actor">Actor</option>
+        <option value="director">Director</option>
+      </select>
       <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
   </div>
 </nav>
+
+<script>
+  function updateFormAction() {
+    const searchType = document.querySelector('select[name="searchType"]').value;
+    const searchForm = document.getElementById('searchForm');
+
+    if (searchType === 'movie') {
+      searchForm.action = '/search-movie';
+    } else if (searchType === 'actor') {
+      searchForm.action = '/search-actor';
+    } else if (searchType === 'director') {
+      searchForm.action = '/search-director';
+    }
+  }
+
+  updateFormAction();
+</script>

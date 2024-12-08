@@ -96,12 +96,12 @@ class TemplateEngine {
 
   applyHelper(helperName, ...args) {
     const context = args.pop();
-  
+
     const helper = this.helpers[helperName];
     if (typeof helper === "function") {
       return helper(...args, context);
     }
-  
+
     return "";
   }
 
@@ -152,11 +152,7 @@ class TemplateEngine {
   handleNested(template, context) {
     const mark = this.config.individualMark;
     const nestedRegex = new RegExp(
-      [
-        `${mark}{(if|for)\\s+([^}]+)}`,
-        "([\\s\\S]*?)",
-        `${mark}{/(if|for)}`,
-      ].join(""),
+      [`${mark}{(if|for)\\s+([^}]+)}`, "([\\s\\S]*?)", `{/(if|for)}`].join(""),
       "g"
     );
 
@@ -227,6 +223,13 @@ class TemplateEngine {
   }
 
   evaluateCondition(condition, context) {
+    if (condition.includes("!=")) {
+      const [left, right] = condition.split("!=").map((part) => part.trim());
+      const leftValue = this.getNestedValue(context, left);
+      const rightValue = this.getNestedValue(context, right);
+      return leftValue != rightValue;
+    }
+
     if (condition.includes("===")) {
       const [left, right] = condition.split("===").map((part) => part.trim());
       const leftValue = this.getNestedValue(context, left);
@@ -246,6 +249,8 @@ class TemplateEngine {
   }
 
   getNestedValue(obj, path) {
+    if (path == "null") return null;
+
     return path
       .split(".")
       .reduce(

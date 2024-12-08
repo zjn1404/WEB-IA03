@@ -371,7 +371,7 @@
     }
 }
 
-  document.getElementById('next-page-top-box-office')?.addEventListener('click', () => {
+  document.getElementById('next-page-top-favorite')?.addEventListener('click', () => {
       const totalPages = Math.ceil(totalElementTopFavorite / pageSizeTopFavorite);
       if (currentPageTopFavorite < totalPages) {
           currentPageTopFavorite++;
@@ -379,7 +379,7 @@
       }
   });
 
-  document.getElementById('prev-page-top-box-office')?.addEventListener('click', () => {
+  document.getElementById('prev-page-top-favorite')?.addEventListener('click', () => {
       if (currentPageTopFavorite > 1) {
           currentPageTopFavorite--;
           fetchTopFavorite();

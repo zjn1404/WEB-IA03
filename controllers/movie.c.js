@@ -4,7 +4,7 @@ const errorCode = require("../error/errorCode.js");
 
 const ec = errorCode.ErrorCode;
 
-const getTopBoxOffice = async (req, res) => {
+const getTopBoxOffice = async (req, res, next) => {
   const limit = 15;
   try {
     const topBoxOffices = await movieModel.topBoxOffice(limit);
@@ -16,8 +16,8 @@ const getTopBoxOffice = async (req, res) => {
 
     res.json({ paginationResult });
   } catch (e) {
-    console.error(e);
-    throw new ApplicationError(ec.SERVER_ERROR);
+    console.error(e.message);
+    return next(new ApplicationError(ec.SERVER_ERROR));
   }
 };
 
@@ -38,7 +38,7 @@ const processGenres = (genres) => {
   return "[" + genres.join(",") + "]";
 };
 
-const getTopRating = async (req, res) => {
+const getTopRating = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 5;
     const topRatings = await movieModel.topRating(limit);
@@ -56,47 +56,51 @@ const getTopRating = async (req, res) => {
 
     res.json({ result });
   } catch (e) {
-    console.error(e);
-    throw new ApplicationError(ec.SERVER_ERROR);
+    return next(new ApplicationError(ec.SERVER_ERROR));
   }
 };
 
-const getTopFavorite = async (req, res) => {
+const getTopFavorite = async (req, res, next) => {
+  const limit = 15;
   try {
-    const limit = parseInt(req.query.limit) || 5;
-    const topFavorites = await movieModel.topFavorite(limit);
-    const topFavoriteWithGenres = topFavorites.map(async (movie) => {
-      movie.genres = await getGenres(movie.id);
-      return movie;
+    const topFav = await movieModel.topBoxOffice(limit);
+
+    const paginationResult = {
+      movies: topFav,
+      total: limit,
+    };
+
+    res.json({ paginationResult });
+  } catch (e) {
+    console.error(e.message);
+    return next(new ApplicationError(ec.SERVER_ERROR));
+  }
+};
+
+const getByNameOrGenres = async (req, res, next) => {
+  const limit = 9;
+  try {
+    const keyword = req.query.keyword;
+    const page = req.query.page || 1;
+
+    let movies = await movieModel.getByNameOrGenres(keyword);
+    const totalPages = Math.ceil(movies.length / limit);
+    movies = movies.slice((page - 1) * limit, page * limit);
+
+    movies.map((m) => {
+      m.value = m.value == null ? '' : m.value;
+    })
+
+    res.render("home/moviesearch", {
+      movies: movies,
+      page: page,
+      totalPages: totalPages
     });
-
-    let result = await Promise.all(topFavoriteWithGenres);
-
-    result = result.map((movie) => {
-      movie.genres = processGenres(movie.genres);
-      return movie;
-    });
-
-    res.json({ result });
   } catch (e) {
     console.error(e);
-    throw new ApplicationError(ec.SERVER_ERROR);
+    return next(new ApplicationError(ec.SERVER_ERROR));
   }
-}
-
-const getByNameOrGenres = async (req, res) => {
-  try {
-    const name = req.query.name;
-    const genres = req.query.genres;
-
-    const movies = await movieModel.getByNameOrGenres(name, genres);
-
-    res.json({ movies });
-  } catch (e) {
-    console.error(e);
-    throw new ApplicationError(ec.SERVER_ERROR);
-  }
-}
+};
 
 module.exports = {
   getTopBoxOffice,

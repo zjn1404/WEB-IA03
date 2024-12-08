@@ -68,7 +68,7 @@ module.exports = {
         ORDER BY "revenueprofit" DESC
         LIMIT ${limit};
       `;
-      console.log('top box office sql:', sql);
+
       const movies = await db.any(sql);
 
       return movies;
@@ -87,7 +87,6 @@ module.exports = {
         ORDER BY imdb DESC
         LIMIT ${limit}
       `;
-      console.log('top rating sql:', sql);
       const movies = await db.any(sql);
 
       return movies;
@@ -105,7 +104,6 @@ module.exports = {
         WHERE mg."movieid" = '${movieId}'
       `;
       
-      console.log('get genres sql:', sql);
       const genres = await db.any(sql);
 
       return genres;
@@ -125,7 +123,6 @@ module.exports = {
         LIMIT ${limit}
       `;
 
-      console.log('top favorite sql:', sql);
       const movies = await db.any(sql);
 
       return movies;
@@ -134,33 +131,20 @@ module.exports = {
     }
   },
 
-  getByNameOrGenres: async (name, genres) => {
+  getByNameOrGenres: async (keyword) => {
     try {
       let condition = "";
-      if (name) {
-        condition += `m."fulltitle" LIKE '%${name}%'`;
-      }
-
-      if (genres) {
-        if (name) {
-          condition += " OR ";
-        }
-
-        condition += `g."value" IN (${genres
-          .split(",")
-          .map((genre) => `'${genre}'`)
-          .join(",")})`;
+      if (keyword) {
+        condition = `m."fulltitle" ILIKE '%${keyword}%' OR g."value" ILIKE '%${keyword}%'`;
       }
 
       const sql = `
-        SELECT m.*
+        SELECT DISTINCT m.*, g.value
         FROM "${schema}"."movies" m
-        JOIN "${schema}"."moviegenres" mg ON mg."movieid" = m."id"
-        JOIN "${schema}"."genres" g ON g."key" = mg."genrekey"
+        LEFT JOIN "${schema}"."moviegenres" mg ON mg."movieid" = m."id"
+        LEFT JOIN "${schema}"."genres" g ON g."key" = mg."genrekey"
         WHERE ${condition}
       `;
-      console.log(sql);
-
       const movies = await db.any(sql);
 
       return movies;

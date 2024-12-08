@@ -126,6 +126,7 @@ module.exports = (schema) => {
         const data = await db.any(sql);
         return data;
       } catch (e) {
+        console.log(e);
         throw new ApplicationError(ec.SERVER_ERROR);
       }
     },
