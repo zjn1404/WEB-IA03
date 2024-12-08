@@ -95,13 +95,13 @@ class TemplateEngine {
   }
 
   applyHelper(helperName, ...args) {
-    args.pop();
-
+    const context = args.pop();
+  
     const helper = this.helpers[helperName];
     if (typeof helper === "function") {
-      return helper(...args);
+      return helper(...args, context);
     }
-
+  
     return "";
   }
 

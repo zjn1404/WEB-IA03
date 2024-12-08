@@ -1,7 +1,9 @@
 const express = require("express");
+const cors = require("cors");
 require("dotenv").config();
 const path = require("path");
 const templateEngine = require("./22413");
+const movieRouter = require("./routers/movie.r");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,8 +22,30 @@ app.engine(
 app.set("view engine", "22413");
 app.set("views", path.join(__dirname, ".", "views"));
 
+app.use(cors());
 app.get("/", (req, res) => {
   res.render("home/home");
+});
+
+app.use("/", movieRouter);
+
+app.use((req, res, next) => {
+  res.status(ec.PAGE_NOT_FOUND.statusCode).render("./partials/error", {
+    error: new ApplicationError(ec.PAGE_NOT_FOUND),
+  });
+});
+
+app.use((err, req, res, next) => {
+  console.log(err);
+  const statusCode = err.statusCode
+    ? err.statusCode
+    : ec.SERVER_ERROR.statusCode;
+  res.status(statusCode).render("./partials/error", {
+    error:
+      statusCode === ec.SERVER_ERROR.statusCode
+        ? new ApplicationError(ec.SERVER_ERROR)
+        : new ApplicationError(err),
+  });
 });
 
 app.listen(PORT, () => {

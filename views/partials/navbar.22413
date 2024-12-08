@@ -1,9 +1,12 @@
 <nav class="navbar mt-2 rounded app-navbar">
   <div class="container-fluid">
-    <a class="navbar-brand" href="index.html" @click.prevent="displaySpinner">
+    <a class="navbar-brand" href="/">
       <p class="fa-solid fa-house mb-0"></p>
     </a>
-    <form class="d-flex" role="search" @submit.prevent="handleSearch">
+    <a class="navbar-brand" href="/">
+      <h4 class="individual-mark">22413</h4>
+    </a>
+    <form class="d-flex" role="search">
       <input 
         class="form-control me-2" 
         type="search" 

@@ -2,7 +2,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Category Management</title>
+    <title>Movie Management</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -163,7 +163,9 @@
       <div class="container" style="width: 1200px">
         22413{+ header}
         22413{+ navbar}
+        <div class="mt-3">
         22413{body}
+        </div>
         22413{+ footer}
       </div>
     </div>
