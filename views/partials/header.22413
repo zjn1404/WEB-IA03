@@ -3,6 +3,29 @@
   <h4>Movies info</h4>
   <div class="form-check form-switch custom-switch">
     <input id="dark-mode-button" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
-    <label id="dark-mode-label" class="form-check-label" for="flexSwitchCheckChecked"><p class="fa-regular fa-sun mb-0"></p></label>
+    <label id="dark-mode-label" class="form-check-label" for="flexSwitchCheckChecked">
+      <p class="fa-regular fa-sun mb-0"></p>
+    </label>
   </div>
 </header>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const darkModeButton = document.getElementById("dark-mode-button");
+    const darkModeLabel = document.getElementById("dark-mode-label");
+
+    const isDarkMode = localStorage.getItem("dark-mode") === "true";
+    darkModeButton.checked = isDarkMode;
+    darkModeLabel.innerHTML = isDarkMode
+      ? '<p class="fa-solid fa-moon mb-0"></p>'
+      : '<p class="fa-regular fa-sun mb-0"></p>';
+
+    darkModeButton.addEventListener("change", () => {
+      const isChecked = darkModeButton.checked;
+      localStorage.setItem("dark-mode", isChecked);
+      darkModeLabel.innerHTML = isChecked
+        ? '<p class="fa-solid fa-moon mb-0"></p>'
+        : '<p class="fa-regular fa-sun mb-0"></p>';
+    });
+  });
+</script>

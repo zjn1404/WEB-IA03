@@ -1,91 +1,118 @@
-<div class="container mt-4">
-  <div v-if="loading" class="text-center my-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+<div  class="card mb-4 shadow-sm">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img
+        class="img-fluid rounded-start"
+        src="22413{ actor.imageurl }"
+        alt="22413{actor.name}"
+        style="height: 100%; object-fit: cover;"
+      />
     </div>
-  </div>
-
-  <div v-else-if="error" class="alert alert-danger" role="alert">
-    {{ error }}
-  </div>
-
-  <div v-if="!loading && !actor">
-    <div class="alert alert-info mt-4" role="alert">
-      Actor not found. Please try again.
-    </div>
-  </div>
-
-  <div v-if="!loading && actor" class="card mb-4 shadow-sm">
-    <div class="row g-0">
-      <div class="col-md-4">
-        <img
-          class="img-fluid rounded-start"
-          :src="actor.image || fallbackImage"
-          :alt="actor.name"
-          @error="this.src = fallbackImage"
-          style="height: 100%; object-fit: cover;"
-        />
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <h3 class="card-title">{{ actor.name }}</h3>
-          <p class="card-text">
-            <strong>Birthdate:</strong> {{ formatDate(actor.birthDate) || 'Unknown' }}
-          </p>
-          <p class="card-text">
-            <strong>Death:</strong> {{ formatDate(actor.deathDate) || 'Unknown' }}
-          </p>
-          <p class="card-text">
-            <strong>Awards:</strong> {{ actor.awards || 'None' }}
-          </p>
-          <p class="card-text">
-            <strong>Role:</strong> {{ actor.role || 'Unknown' }}
-          </p>
-          <p class="card-text">
-            <strong>Biography:</strong> {{ actor.summary || 'No biography available' }}
-          </p>
-        </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h3 class="card-title">22413{ actor.name }</h3>
+        <p class="card-text">
+          <strong>Birthdate:</strong> 22413{actor.birthdate}
+        </p>
+        <p class="card-text">
+          <strong>Death:</strong> 22413{actor.deathdate}
+        </p>
+        <p class="card-text">
+          <strong>Awards:</strong> 22413{ actor.awards}
+        </p>
+        <p class="card-text">
+          <strong>Role:</strong> 22413{ actor.role}
+        </p>
+        <p class="card-text">
+          <strong>Biography:</strong> 22413{ actor.summary}
+        </p>
       </div>
     </div>
-  </div>
-
-  <div v-if="!loading && actor && paginatedMovies.length" class="mt-4">
-    <h4>Cast Movies</h4>
-    <ul class="list-group">
-      <li
-        v-for="movie in paginatedMovies"
-        :key="movie.id"
-        class="list-group-item"
-        style="cursor: pointer;"
-        @click="navigateToMovie(movie.id)"
-      >
-        <h5>{{movie.fullTitle}}</h5>
-        <p class="card-text"><strong>Rating:</strong> {{ formatRating(movie.ratings) }}</p>
-        <p class="card-text"><strong>Genre:</strong> {{ getGenre(movie) }}</p>
-        <p class="card-text"><strong>Plot:</strong> {{ movie.plot }}</p>
-      </li>
-    </ul>
-    <nav aria-label="Page navigation" class="mt-3">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" :class="{ disabled: currentPage === 1 }">
-          <a class="page-link" href="#" @click.prevent="goToPage(currentPage - 1)">Previous</a>
-        </li>
-        <li
-          class="page-item"
-          v-for="page in totalPages"
-          :key="'page-' + page"
-          :class="{ active: currentPage === page }"
-        >
-          <a class="page-link" href="#" @click.prevent="goToPage(page)">{{ page }}</a>
-        </li>
-        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-          <a class="page-link" href="#" @click.prevent="goToPage(currentPage + 1)">Next</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-
-  <div v-if="!loading && actor && movies.length === 0" class="alert alert-info mt-4">
-    No movies available for this actor.
   </div>
 </div>
+
+<div class="mt-4">
+  <h4>Cast Movies</h4>
+  <ul class="list-group">
+  </ul>
+  <nav aria-label="Page navigation" class="mt-3">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" id="prevPage">
+        <a class="page-link" href="#" onclick="goToPage(currentPage - 1)">Previous</a>
+      </li>
+      <li id="pagination-numbers"></li>
+      <li class="page-item" id="nextPage">
+        <a class="page-link" href="#" onclick="goToPage(currentPage + 1)">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<script>
+  const movies = [];
+  22413{for movie in movies}
+    movies.push({
+      id: `22413{movie.id}`,
+      fulltitle: `22413{movie.fulltitle}`,
+      ratings: `22413{movie.ratings}`,
+      genres: `22413{movie.genres}`,
+      plot: `22413{movie.plot}`
+    });
+  {/for}
+
+  const moviesPerPage = 5;
+  let currentPage = 1;
+
+  const totalPages = Math.ceil(movies.length / moviesPerPage);
+
+  function renderMovies(page) {
+    const start = (page - 1) * moviesPerPage;
+    const end = start + moviesPerPage;
+
+    const list = document.querySelector(".list-group");
+    list.innerHTML = movies.slice(start, end).map(movie => `
+      <li class="list-group-item" style="cursor: pointer;" onclick="window.location.href='/movie?id=${movie.id}'">
+        <h5>${movie.fulltitle}</h5>
+        <p class="card-text"><strong>Rating:</strong> ${movie.ratings}</p>
+        <p class="card-text"><strong>Genre:</strong> ${movie.genres}</p>
+        <p class="card-text"><strong>Plot:</strong> ${movie.plot}</p>
+      </li>
+    `).join("");
+  }
+
+  function renderPagination() {
+    const paginationNumbers = document.getElementById("pagination-numbers");
+    paginationNumbers.innerHTML = "";
+
+    for (let i = 1; i <= totalPages; i++) {
+      paginationNumbers.innerHTML += `
+        <li class="page-item ${i === currentPage ? 'active' : ''}">
+          <a class="page-link" href="#" onclick="goToPage(${i})">${i}</a>
+        </li>
+      `;
+    }
+
+    document.getElementById("prevPage").classList.toggle("disabled", currentPage === 1);
+    document.getElementById("nextPage").classList.toggle("disabled", currentPage === totalPages);
+  }
+
+  function goToPage(page) {
+    if (page < 1 || page > totalPages) return;
+    event.preventDefault();
+
+    currentPage = page;
+    renderMovies(currentPage);
+    renderPagination();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderMovies(currentPage);
+    renderPagination();
+  });
+</script>
+
+<style>
+  #pagination-numbers {
+    display: flex;
+  }
+</style>

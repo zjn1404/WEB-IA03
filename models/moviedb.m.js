@@ -139,12 +139,14 @@ module.exports = {
       }
 
       const sql = `
-        SELECT DISTINCT m.*, g.value
-        FROM "${schema}"."movies" m
+        SELECT m.*, STRING_AGG(g.value, ', ') AS genres
+        FROM "${schema}"."${tbName}" m
         LEFT JOIN "${schema}"."moviegenres" mg ON mg."movieid" = m."id"
         LEFT JOIN "${schema}"."genres" g ON g."key" = mg."genrekey"
         WHERE ${condition}
+        GROUP BY m."id"
       `;
+      console.log(sql);
       const movies = await db.any(sql);
 
       return movies;
@@ -163,6 +165,24 @@ module.exports = {
       const ratings = await db.any(sql);
 
       return ratings;
+    } catch (e) {
+      throw new ApplicationError(ec.SERVER_ERROR);
+    }
+  },
+
+  getByActorId: async (actorId) => {
+    try {
+      const sql = `
+        SELECT m.*, g.value as genres
+        FROM "${schema}"."movies" m
+        JOIN "${schema}"."movieactors" ma ON ma."movieid" = m."id"
+        JOIN "${schema}"."moviegenres" mg ON mg."movieid" = m."id"
+        JOIN "${schema}"."genres" g ON g."key" = mg."genrekey"
+        WHERE ma."actorid" = '${actorId}'
+      `;
+      const movies = await db.any(sql);
+
+      return movies;
     } catch (e) {
       throw new ApplicationError(ec.SERVER_ERROR);
     }

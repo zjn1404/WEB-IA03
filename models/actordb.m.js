@@ -9,13 +9,28 @@ const idField = "id";
 const ec = errorCode.ErrorCode;
 
 module.exports = {
+  one: async (id) => {
+    try {
+      const sql = `
+        SELECT *
+        FROM "${schema}"."${tbName}" a
+        JOIN "${schema}"."actordetails" ad ON a.id = ad.actorid
+        WHERE "${idField}" = '${id}'
+      `;
+      const actor = await db.any(sql);
+      return actor;
+    } catch (err) {
+      throw new ApplicationError(ec.SERVER_ERROR);
+    }
+  },
+
   getByName: async (name) => {
     try {
       const sql = `
         SELECT *
         FROM "${schema}"."${tbName}"
         WHERE "name" ILIKE '%${name}%'
-      `
+      `;
       const actors = await db.any(sql);
 
       return actors;
@@ -31,7 +46,7 @@ module.exports = {
         FROM "${schema}"."${tbName}" a
         JOIN "${schema}"."movieactors" ma ON a."id" = ma."actorid"
         WHERE ma."movieid" = '${movieId}'
-      `
+      `;
       const actors = await db.any(sql);
 
       return actors;

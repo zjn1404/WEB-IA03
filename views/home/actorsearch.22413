@@ -4,7 +4,7 @@
     <div 
       class="card h-100" 
       style="cursor: pointer;" 
-      onclick="navigateToActor(22413{actor.id})"
+      onclick="window.location.href='/actor?id=22413{actor.id}'"
     >
       <img 
         src="22413{actor.imageurl}" 

@@ -175,6 +175,7 @@
       const darkModeButton = document.getElementById("dark-mode-button");
       const darkModeLabel = document.getElementById("dark-mode-label");
       const app = document.getElementById("app");
+      app.setAttribute("data-bs-theme", localStorage.getItem("dark-mode") === "true" ? "dark" : "light");
 
       darkModeButton.addEventListener("change", () => {
         if (darkModeButton.checked) {
@@ -184,6 +185,7 @@
           app.setAttribute("data-bs-theme", "light");
           darkModeLabel.innerHTML = '<p class="fa-regular fa-sun mb-0"></p>';
         }
+        localStorage.setItem("dark-mode", darkModeButton.checked);
       });
     });
     </script>
