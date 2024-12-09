@@ -164,6 +164,24 @@ module.exports = {
     }
   },
 
+  top50Movies: async (limit) => {
+    try {
+      const sql = `
+        SELECT 
+        m.*
+        FROM "${schema}"."top50movies" tm
+        JOIN "${schema}"."movies" m ON tm."movieid" = m."id"
+        ORDER BY tm."rank"
+        LIMIT ${limit}
+      `;
+      const movies = await db.any(sql);
+
+      return movies;
+    } catch (e) {
+      throw new ApplicationError(ec.SERVER_ERROR);
+    }
+  },
+
   getGenres: async (movieId) => {
     try {
       const sql = `

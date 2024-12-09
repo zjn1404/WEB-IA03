@@ -296,7 +296,7 @@ const getTopRating = async (req, res, next) => {
 const getTopFavorite = async (req, res, next) => {
   const limit = 15;
   try {
-    const topFav = await movieModel.topBoxOffice(limit);
+    const topFav = await movieModel.top50Movies(limit);
 
     const paginationResult = {
       movies: topFav,
