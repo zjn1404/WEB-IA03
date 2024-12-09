@@ -167,10 +167,6 @@
         flex-direction: column;
       }
 
-      .mt-3 {
-        flex: 1;
-      }
-
       .app-footer {
         margin-top: auto;
       }

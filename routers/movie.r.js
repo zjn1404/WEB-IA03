@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const movieController = require("../controllers/movie.c");
 
+router.get("/movie/add", movieController.getAddMoviePage);
+router.post("/movie",movieController.upload.single('image'), movieController.addMovie);
 router.get("/top-box-office", movieController.getTopBoxOffice);
 router.get("/top-ratings", movieController.getTopRating);
 router.get("/top-favorites", movieController.getTopFavorite);

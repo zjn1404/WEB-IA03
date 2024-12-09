@@ -3,10 +3,13 @@
     <a class="navbar-brand" href="/">
       <p class="fa-solid fa-house mb-0"></p>
     </a>
-    <a class="navbar-brand" href="/fav">
-      <h4 class="individual-mark">22413</h4>
+    <a class="navbar-brand " href="/fav">
+      <h4 class="individual-mark m-0">22413</h4>
     </a>
-    <form class="d-flex" id="searchForm" method="get">
+    <a class="navbar-brand " href="/movie/add">
+      <h4 class="add-new-movie m-0">Add Movie</h4>
+    </a>
+    <form class="d-flex m-0" id="searchForm" method="get">
       <input 
         class="form-control me-2" 
         type="search" 

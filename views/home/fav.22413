@@ -1,5 +1,5 @@
 <div class="mt-4">
-  <h5>Add a Favorite Movie</h5>
+  <h5>Favorite Movie Management</h5>
   <form id="favForm" action="/fav" method="post">
     <div class="form-group">
       <label for="movieSelect">Select a Movie</label>
@@ -52,11 +52,11 @@
       const li = document.createElement('li');
       li.classList.add('list-group-item');
       li.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center">
-          <div 
-            class="d-flex align-items-center" 
+        <div class="d-flex justify-content-between align-items-center" 
             style="cursor: pointer" 
-            onclick="window.location.href='/movie?id=${favorite.id}'"
+            onclick="window.location.href='/movie?id=${favorite.id}'">
+          <div 
+            class="d-flex align-items-center"
           >
             <img 
               src="${favorite.imageurl}" 
@@ -69,7 +69,8 @@
           </div>
           <button 
             class="btn btn-danger btn-sm" 
-            onclick="window.location.href='/fav/delete?id=${favorite.id}'"
+            onclick="deleteFavorite('${favorite.id}', event)"
+            style="z-index: 3"
           >
             Delete
           </button>
@@ -77,6 +78,11 @@
       `;
       favoritesList.appendChild(li);
     });
+  }
+
+  function deleteFavorite(id, event) {
+    event.stopPropagation(); 
+    window.location.href = `/fav/delete?id=${id}`;
   }
 
   function renderFavoritesPagination() {

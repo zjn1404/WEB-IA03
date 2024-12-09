@@ -10,6 +10,15 @@ const idField = "id";
 const ec = errorCode.ErrorCode;
 
 module.exports = {
+  all: async () =>{
+    try {
+      const creators = await db.all(tbName);
+      return creators;
+    } catch (err) {
+      throw new ApplicationError(ec.SERVER_ERROR);
+    }
+  },
+
   getByName: async (name) => {
     try {
       const sql = `

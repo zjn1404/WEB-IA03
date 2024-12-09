@@ -30,8 +30,8 @@ app.set("view engine", "22413");
 app.set("views", path.join(__dirname, ".", "views"));
 
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: true }))
 app.get("/", (req, res) => {
   res.render("home/home");
 });

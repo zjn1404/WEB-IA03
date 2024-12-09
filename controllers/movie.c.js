@@ -1,11 +1,135 @@
 const movieModel = require("../models/moviedb.m.js");
 const actorModel = require("../models/actordb.m.js");
 const directorModel = require("../models/directordb.m.js");
+const genreModel = require("../models/genredb.m.js");
 const reviewModel = require("../models/reviewdb.m.js");
 const ApplicationError = require("../error/cerror.js");
 const errorCode = require("../error/errorCode.js");
+const cloudinary = require("cloudinary").v2;
+const multer = require("multer");
+const path = require("path");
+
+require("dotenv").config();
+
+const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
+const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_SECRET_KEY;
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+cloudinary.config({
+  cloud_name: CLOUDINARY_CLOUD_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_API_SECRET,
+});
 
 const ec = errorCode.ErrorCode;
+
+const getAddMoviePage = async (req, res, next) => {
+  const genres = await genreModel.all();
+  const actors = await actorModel.all();
+  const creators = await directorModel.all();
+  res.render("home/addmovie", {
+    genres: genres,
+    actors: actors,
+    creators: creators,
+  });
+};
+
+const uploadImage = async (file) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { resource_type: "auto" },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.secure_url);
+        }
+      }
+    );
+
+    const streamify = require("stream");
+    const bufferStream = streamify.Readable.from([file.buffer]);
+    bufferStream.pipe(uploadStream);
+  });
+};
+
+const addMovie = async (req, res, next) => {
+  try {
+    const title = req.body.title;
+    if (!title) {
+      return next(new ApplicationError(ec.MOVIE_TITLE_REQUIRED));
+    }
+
+    const fulltitle = req.body.fulltitle;
+    if (!fulltitle) {
+      return next(new ApplicationError(ec.MOVIE_FULLTITLE_REQUIRED));
+    }
+
+    const releasedate = req.body.releasedate;
+    if (!releasedate) {
+      return next(new ApplicationError(ec.MOVIE_RELEASEDATE_REQUIRED));
+    }
+
+    const year = req.body.year;
+    if (!year) {
+      return next(new ApplicationError(ec.MOVIE_YEAR_REQUIRED));
+    }
+
+    const plot = req.body.plot;
+    if (!plot) {
+      return next(new ApplicationError(ec.MOVIE_PLOT_REQUIRED));
+    }
+
+    const genres = req.body.genres;
+    if (!genres) {
+      return next(new ApplicationError(ec.MOVIE_GENRES_REQUIRED));
+    }
+
+    const actors = req.body.actors;
+    if (!actors) {
+      return next(new ApplicationError(ec.MOVIE_ACTORS_REQUIRED));
+    }
+
+    const directors = req.body.creators;
+    if (!directors) {
+      return next(new ApplicationError(ec.MOVIE_DIRECTORS_REQUIRED));
+    }
+
+    const movieid = "tt" + Math.floor(Math.random() * 1000000000);
+
+    const image = req.file;
+    if (!image) {
+      return next(new ApplicationError(ec.MOVIE_IMAGE_REQUIRED));
+    }
+
+    const uploadResult = await uploadImage(image);
+
+    const movie = {
+      id: movieid,
+      title: title,
+      fulltitle: fulltitle,
+      releasedate: releasedate,
+      year: year,
+      plot: plot,
+      type: "Movie",
+      imageurl: uploadResult,
+      genres: genres,
+      actors: actors,
+      directors: directors,
+    };
+
+    await movieModel.add(movie);
+
+    return res.json({
+      ok: true,
+    });
+  } catch (e) {
+    return next(new ApplicationError(ec.SERVER_ERROR));
+  }
+};
 
 const addFav = async (req, res, next) => {
   try {
@@ -25,7 +149,6 @@ const addFav = async (req, res, next) => {
       message: "Movie added to favorite list",
     });
   } catch (e) {
-    console.error(e);
     return next(new ApplicationError(ec.SERVER_ERROR));
   }
 };
@@ -70,7 +193,6 @@ const deleteFav = async (req, res, next) => {
       message: "Movie removed from favorite list",
     });
   } catch (e) {
-    console.error(e);
     return next(new ApplicationError(ec.SERVER_ERROR));
   }
 };
@@ -106,7 +228,6 @@ const createReview = async (req, res, next) => {
       message: "Review successfully",
     });
   } catch (e) {
-    console.error(e);
     return next(new ApplicationError(ec.SERVER_ERROR));
   }
 };
@@ -142,7 +263,12 @@ const processGenres = (genres) => {
   if (genres.length === 0) {
     return "";
   }
-  return "[" + genres.join(",") + "]";
+  let res = "";
+  genres.forEach((genre) => {
+    res += genre.value + ", ";
+  });
+  res = res.slice(0, res.length - 2);
+  return "[" + res + "]";
 };
 
 const getTopRating = async (req, res, next) => {
@@ -241,6 +367,7 @@ const getById = async (req, res, next) => {
     }
 
     const genres = await getGenres(movie.id);
+
     movie.genres = processGenres(genres);
 
     const ratings = await movieModel.getRatings(movie.id);
@@ -250,10 +377,17 @@ const getById = async (req, res, next) => {
     movie.directors = await processDirectors(directors);
 
     const actors = await actorModel.getByMovieId(movie.id);
+    actors.forEach(actor => {
+      actor.charactername = actor.charactername || "No data";
+    })
+
     const reviews = await reviewModel.getByMovieId(movie.id);
     reviews.forEach((review) => {
       review.reviewdate = review.reviewdate.toISOString().split("T")[0];
     });
+
+    movie.awards = movie.awards || "No data";
+    movie.companies = movie.companies || "No data";
 
     return res.render("home/moviedetail", {
       movie: movie,
@@ -267,6 +401,8 @@ const getById = async (req, res, next) => {
 };
 
 module.exports = {
+  upload,
+  addMovie,
   deleteFav,
   getAllFav,
   addFav,
@@ -276,4 +412,5 @@ module.exports = {
   getTopFavorite,
   getByNameOrGenres,
   getById,
+  getAddMoviePage,
 };

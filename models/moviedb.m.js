@@ -9,6 +9,44 @@ const idField = "id";
 const ec = errorCode.ErrorCode;
 
 module.exports = {
+  add: async (movie) => {
+    try {
+      await db.add(tbName, {
+        id: movie.id,
+        title: movie.title,
+        fulltitle: movie.fulltitle,
+        releasedate: movie.releasedate,
+        year: movie.year,
+        plot: movie.plot,
+        type: movie.type,
+        imageurl: movie.imageurl,
+      });
+      movie.genres.forEach(async (genre) => {
+        await db.add("moviegenres", {
+          movieid: movie.id,
+          genrekey: genre,
+        });
+      });
+
+      movie.actors.forEach(async (actor) => {
+        await db.add("movieactors", {
+          movieid: movie.id,
+          actorid: actor,
+        });
+      });
+
+      movie.directors.forEach(async (director) => {
+        await db.add("moviescreators", {
+          movieid: movie.id,
+          creatorid: director,
+        });
+      });
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError(ec.SERVER_ERROR);
+    }
+  },
+
   addFav: async (movie) => {
     try {
       await db.add("favoritemovies", movie);

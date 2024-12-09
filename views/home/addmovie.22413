@@ -1,0 +1,130 @@
+<h2 class="mb-4">Add Movie</h2>
+<form id="movieForm" action="/movie" method="post">
+    <div class="form-group">
+        <label for="title"><h5>Title</h5></label>
+        <input type="text" class="form-control" id="title" placeholder="Enter title" >
+    </div>
+    <div class="form-group">
+        <label for="fulltitle"><h5>Full Title</h5></label>
+        <input type="text" class="form-control" id="fulltitle" placeholder="Enter full title">
+    </div>
+    <div class="form-group">
+        <label for="genre"><h5>Genres</h5></label>
+        <select multiple class="form-control" id="genre" >
+            22413{for genre in genres}
+                <option value="22413{genre.key}">22413{genre.value}</option>
+            {/for}
+        </select>
+        <small class="form-text text-muted">Hold Ctrl (or Cmd) to select multiple genres</small>
+    </div>
+    <div class="form-group">
+        <label for="creators"><h5>Creators</h5></label>
+        <select multiple class="form-control" id="creators" >
+            22413{for creator in creators}
+                <option value="22413{creator.id}">22413{creator.name}</option>
+            {/for}
+        </select>
+        <small class="form-text text-muted">Hold Ctrl (or Cmd) to select multiple creators</small>
+    </div>
+    <div class="form-group">
+        <label for="actors"><h5>Actors</h5></label>
+        <select multiple class="form-control" id="actors" >
+            22413{for actor in actors}
+                <option value="22413{actor.id}">22413{actor.name}</option>
+            {/for}
+        </select>
+        <small class="form-text text-muted">Hold Ctrl (or Cmd) to select multiple actors</small>
+    </div>
+    <div class="form-group">
+        <label for="image"><h5>Image</h5></label>
+        <input type="file" class="form-control" id="image">
+    </div>
+    <div class="form-group">
+        <label for="releasedate"><h5>Release Date</h5></label>
+        <input type="date" class="form-control" id="releasedate" >
+    </div>
+    <div class="form-group">
+        <label for="year"><h5>Year</h5></label>
+        <input type="number" class="form-control" id="year" placeholder="Enter year" >
+    </div>
+    <div class="form-group">
+        <label for="plot"><h5>Plot</h5></label>
+        <textarea type="text" class="form-control" id="plot" placeholder="Type plot" ></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+</form>
+
+<script>
+document.getElementById('movieForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const selectedGenres = Array.from(
+        document.getElementById('genre').selectedOptions
+    ).map(option => option.value);
+
+    const selectedCreators = Array.from(
+        document.getElementById('creators').selectedOptions
+    ).map(option => option.value);
+
+    const selectedActors = Array.from(
+        document.getElementById('actors').selectedOptions
+    ).map(option => option.value);
+
+    const formData = new FormData();
+    formData.append('title', document.getElementById('title').value);
+    formData.append('fulltitle', document.getElementById('fulltitle').value);
+    formData.append('releasedate', document.getElementById('releasedate').value);
+    formData.append('year', document.getElementById('year').value);
+    formData.append('plot', document.getElementById('plot').value);
+
+    const imageFile = document.getElementById('image').files[0]; 
+    if (imageFile) {
+        formData.append('image', imageFile); 
+    }
+
+    selectedGenres.forEach(genre => formData.append('genres[]', genre));
+    selectedCreators.forEach(creator => formData.append('creators[]', creator));
+    selectedActors.forEach(actor => formData.append('actors[]', actor));
+
+    fetch('/movie', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error while adding movie);
+        }
+        return response.json();
+    })
+    .then(result => {
+        document.getElementById('movieForm').reset();
+        alert('Movie added successfully!');
+    })
+    .catch(error => {
+        alert('Failed to add movie. Please try again.');
+    });
+});
+
+function sendPayload(data) {
+    fetch('/movie', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(result => {
+        document.getElementById('movieForm').reset();
+        alert('Movie added successfully!');
+    })
+    .catch(error => {
+        alert('Failed to add movie. Please try again.');
+    });
+}
+</script>

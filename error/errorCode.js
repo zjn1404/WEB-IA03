@@ -49,6 +49,12 @@ export const ErrorCode = {
     desc: "The movie you're looking for doesn't exist",
   },
 
+  MOVIE_IMAGE_REQUIRED: {
+    message: "Movie image is required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Movie image is required",
+  },
+
   MOVIE_ID_REQUIRED: {
     message: "Movie ID is required",
     statusCode: HttpStatus.BAD_REQUEST,
@@ -71,6 +77,54 @@ export const ErrorCode = {
     message: "Username is required",
     statusCode: HttpStatus.BAD_REQUEST,
     desc: "Username is required",
+  },
+
+  MOVIE_TITLE_REQUIRED: {
+    message: "Movie title is required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Movie title is required",
+  },
+
+  MOVIE_FULLTITLE_REQUIRED: {
+    message: "Movie full title is required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Movie full title is required",
+  },
+
+  MOVIE_YEAR_REQUIRED: {
+    message: "Movie year is required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Movie year is required",
+  },
+
+  MOVIE_PLOT_REQUIRED: {
+    message: "Movie plot is required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Movie plot is required",
+  },
+
+  MOVIE_RELEASEDATE_REQUIRED: {
+    message: "Movie release date is required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Movie release date is required",
+  },
+
+  MOVIE_GENRES_REQUIRED: {
+    message: "Movie genres are required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Movie genres are required",
+  },
+
+  MOVIE_ACTORS_REQUIRED: {
+    message: "Movie actors are required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Movie actors are required",
+  },
+
+  MOVIE_DIRECTORS_REQUIRED: {
+    message: "Movie directors are required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Movie directors are required",
   },
 
   ACTOR_NOT_FOUND: {
