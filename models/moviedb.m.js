@@ -9,6 +9,37 @@ const idField = "id";
 const ec = errorCode.ErrorCode;
 
 module.exports = {
+  addFav: async (movie) => {
+    try {
+      await db.add("favoritemovies", movie);
+    } catch (e) {
+      throw new ApplicationError(ec.SERVER_ERROR);
+    }
+  },
+
+  deleteFav: async (movieId) => {
+    try {
+      await db.delete("favoritemovies", "movieid", movieId);
+    } catch (e) {
+      throw new ApplicationError(ec.SERVER_ERROR);
+    }
+  },
+
+  getAllFav: async () => {
+    try {
+      const sql = `
+        SELECT m.*
+        FROM "${schema}"."favoritemovies" fav
+        JOIN "${schema}"."movies" m ON fav."movieid" = m."id"
+      `;
+
+      const movies = await db.any(sql);
+      return movies;
+    } catch (e) {
+      throw new ApplicationError(ec.SERVER_ERROR);
+    }
+  },
+
   all: async () => {
     try {
       const movies = await db.all(tbName);

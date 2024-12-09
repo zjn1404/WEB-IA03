@@ -7,5 +7,8 @@ router.get("/top-favorites", movieController.getTopFavorite);
 router.get("/search-movie", movieController.getByNameOrGenres);
 router.get("/movie", movieController.getById);
 router.post("/review", movieController.createReview);
+router.post("/fav", movieController.addFav);
+router.get("/fav", movieController.getAllFav);
+router.get("/fav/delete", movieController.deleteFav);
 
 module.exports = router;

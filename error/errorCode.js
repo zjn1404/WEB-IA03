@@ -49,6 +49,12 @@ export const ErrorCode = {
     desc: "The movie you're looking for doesn't exist",
   },
 
+  MOVIE_ID_REQUIRED: {
+    message: "Movie ID is required",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "Movie ID is required",
+  },
+
   REVIEW_TITLE_REQUIRED: {
     message: "Review title is required",
     statusCode: HttpStatus.BAD_REQUEST,

@@ -28,7 +28,6 @@ module.exports = {
     try {
       await db.add(tbName, review);
     } catch (err) {
-      console.log(err.message);
       throw new ApplicationError(ec.SERVER_ERROR);
     }
   },

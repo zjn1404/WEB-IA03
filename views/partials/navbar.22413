@@ -3,7 +3,7 @@
     <a class="navbar-brand" href="/">
       <p class="fa-solid fa-house mb-0"></p>
     </a>
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="/fav">
       <h4 class="individual-mark">22413</h4>
     </a>
     <form class="d-flex" id="searchForm" method="get">

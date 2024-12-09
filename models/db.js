@@ -80,6 +80,7 @@ module.exports = (schema) => {
 
         return rs;
       } catch (e) {
+        console.log(e.message);
         throw new ApplicationError(ec.SERVER_ERROR);
       }
     },

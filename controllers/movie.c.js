@@ -7,6 +7,74 @@ const errorCode = require("../error/errorCode.js");
 
 const ec = errorCode.ErrorCode;
 
+const addFav = async (req, res, next) => {
+  try {
+    const movieId = req.body.movieId;
+    if (!movieId) {
+      return next(new ApplicationError(ec.MOVIE_ID_REQUIRED));
+    }
+
+    const movie = await movieModel.one(movieId);
+    if (!movie) {
+      return next(new ApplicationError(ec.MOVIE_NOT_FOUND));
+    }
+
+    await movieModel.addFav({ movieid: movie.id });
+
+    res.render("partials/success", {
+      message: "Movie added to favorite list",
+    });
+  } catch (e) {
+    console.error(e);
+    return next(new ApplicationError(ec.SERVER_ERROR));
+  }
+};
+
+const getAllFav = async (req, res, next) => {
+  try {
+    let favs = await movieModel.getAllFav();
+    const movies = await movieModel.all();
+
+    favs = await Promise.all(
+      favs.map(async (m) => {
+        m.genres = await getGenres(m.id);
+        m.genres = processGenres(m.genres);
+        return m;
+      })
+    );
+
+    const moviesNotIncludeFav = movies.filter(
+      (movie) => !favs.find((fav) => fav.id === movie.id)
+    );
+
+    moviesNotIncludeFav.sort((a, b) => a.fulltitle.localeCompare(b.fulltitle));
+    res.render("home/fav", {
+      favs: favs,
+      movies: moviesNotIncludeFav,
+    });
+  } catch (err) {
+    return next(new ApplicationError(ec.SERVER_ERROR));
+  }
+};
+
+const deleteFav = async (req, res, next) => {
+  try {
+    const movieId = req.query.id;
+    if (!movieId) {
+      return next(new ApplicationError(ec.MOVIE_ID_REQUIRED));
+    }
+
+    await movieModel.deleteFav(movieId);
+
+    res.render("partials/success", {
+      message: "Movie removed from favorite list",
+    });
+  } catch (e) {
+    console.error(e);
+    return next(new ApplicationError(ec.SERVER_ERROR));
+  }
+};
+
 const createReview = async (req, res, next) => {
   try {
     const username = req.body.username;
@@ -199,6 +267,9 @@ const getById = async (req, res, next) => {
 };
 
 module.exports = {
+  deleteFav,
+  getAllFav,
+  addFav,
   createReview,
   getTopBoxOffice,
   getTopRating,
